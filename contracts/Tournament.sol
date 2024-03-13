@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Champion.sol"; // Import the Champion contract
 
 contract Tournament is Ownable {
-    Champion public championContract;
 
     struct Competitor {
         address addr;
@@ -20,14 +19,11 @@ contract Tournament is Ownable {
         uint256 competitor1;
         uint256 competitor2;
         string weightClass;
-        uint256 winner; // 0 if not yet decided
-        bool complete;
-        bool finals;
+        uint256 winner; // 2 by default, 0 for comp1, 1 for comp2
     }
 
+    Champion public championContract;
     uint256[] public bracket;
-    uint256[] public round2;
-    uint256[] public semiFinals;
     uint256 public entranceFee;
     uint256 public promotionShare;
     uint256 public matchCount; // Counter for the number of matches
@@ -36,28 +32,20 @@ contract Tournament is Ownable {
     mapping(uint256 => Match) public matches;
     mapping(address => bool) public isRegistered;
 
-    event CompetitorRegistered(address competitor, string weightClass);
-    event MatchCreated(uint256 weightClass, uint256 matchIndex);
-    event MatchResult(uint256 competitor1, uint256 competitor2, uint256 matchIndex, address winner);
-
     constructor(address _championContract, uint256 _entranceFee, uint256 _promotionShare) 
         Ownable(msg.sender) {
         championContract = Champion(_championContract);
         entranceFee = _entranceFee;
         promotionShare = _promotionShare;
-        competitorCount = 0; // Initialize competitor count
     }
 
-    function registerCompetitor(string memory _first, string memory _last, string memory weightClass) external payable {
+    function registerCompetitor(string memory _first, string memory _last, uint16 weightClass) external payable {
         require(msg.value == entranceFee, "Incorrect entrance fee");
-        require(bracket.length < 8, "Bracket is already full");
+        require(bracket.length < 8, "Bracket is full");
 
         competitorCount++;
 
-        isRegistered[msg.sender] = true;
-
         competitors[competitorCount] = Competitor(msg.sender, _first, _last, weightClass, 0, 0);
-        bracket.push(bracket.length);
 
         emit CompetitorRegistered(msg.sender, weightClass);
 
@@ -66,27 +54,25 @@ contract Tournament is Ownable {
         payable(owner()).transfer(promotionAmount);
     }
 
-    function createMatch(uint256 competitor1Index, uint256 competitor2Index, string memory _weightClass, bool _isFinals) external onlyOwner {
+    function createMatch(uint16 competitor1Id, uint16 competitor2Id, uint16 _weightClass) external onlyOwner {
         matchCount++;
         matches[matchCount] = Match({
-            competitor1: competitor1Index,
-            competitor2: competitor2Index,
+            competitor1: competitor1Id,
+            competitor2: competitor2Id,
             weightClass: _weightClass,
-            winner: 0,
-            complete: false,
-            finals: _isFinals
+            winner: 2
         });
     }
 
-    function declareWinner(uint256 matchIndex, uint256 winnerIndex, bool isFinals) external onlyOwner {
+    function declareWinner(uint256 matchIndex, uint16 winnerIndex, uint16 loserIndex, bool isFinals) external onlyOwner {
         Match storage matchItem = matches[matchIndex];
-        require(matchItem.complete == true, "Winner already declared");
         require(winnerIndex == matchItem.competitor1 || winnerIndex == matchItem.competitor2, "Invalid winner index"); //The winner must be someone from the match
 
         matchItem.winner = winnerIndex;
-        matchItem.complete = true;
         Competitor storage winner = competitors[winnerIndex];
         winner.wins++;
+        Competitor storage loser = competitors[loserIndex];
+        loser.lossess++;
 
         if (isFinals) {
             awardChampionNFT(competitors[winnerIndex].weightClass, competitors[winnerIndex].addr);
@@ -96,12 +82,8 @@ contract Tournament is Ownable {
         emit MatchResult(matchItem.competitor1, matchItem.competitor2, matchIndex, winner.addr);
     }
 
-    function awardChampionNFT(string memory _weightClass, address _champion) public onlyOwner {
-        require(isRegistered[_champion], "The competitor is not registered to the tournament");
-
-        bytes32 classHash = keccak256(abi.encodePacked(_weightClass));
-        uint256 tokenId = uint256(classHash);
-        address currentOwner = championContract.ownerOf(tokenId);
+    function awardChampionNFT(uint16 _weightClass, address _champion) public onlyOwner {
+        address currentOwner = championContract.ownerOf(_weightClass);
 
         if (currentOwner != address(0)) {
             championContract.transferFrom(currentOwner, _champion, tokenId);
