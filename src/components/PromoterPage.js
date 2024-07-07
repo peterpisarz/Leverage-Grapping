@@ -24,22 +24,22 @@ const PromoterPage = ({ contractAddress }) => {
   };
 
   return (
-    <div className="promoter-page">
-      <div class="row w-100">
-        <div class="col-md-4 d-flex justify-content-center">
+    <div>
+      <div className="row w-100">
+        <div className="col-md-4 d-flex justify-content-center">
 
-          <div className="promoter-card">
+          <div className="card promoter-card">
             <h2>Create New Tournament</h2>
             <form onSubmit={deployTournament}>
               <div className="form-group">
-                <label>Entrance Fee:</label>
+                <label>Entrance Fee (ETH):</label>
                 <input type="text" className="form-control" value={entranceFee} onChange={(e) => setEntranceFee(e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Promotion Share % (i.e. 3):</label>
                 <input type="text" className="form-control" value={promotionShare} onChange={(e) => setPromotionShare(e.target.value)} />
               </div>
-              <button type="submit" className="btn btn-primary margin-top">Deploy</button>
+              <button type="submit" className="btn btn-primary margin-top">Deploy New Tournament</button>
             </form>
           </div>
         

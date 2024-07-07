@@ -25,9 +25,10 @@ const CompetitorPage = ({ contractAddress }) => {
   };
 
   return (
-    <div className="container-fluid">
+    <div>
       <div className="row w-100">
-        <div className="col col-md-4 d-flex justify-content-center">
+        <div className="col-md-4 d-flex justify-content-center">
+
           <div className="card competitor-card">
             <h2>Register as a Competitor</h2>
             <form onSubmit={register}>
@@ -39,7 +40,7 @@ const CompetitorPage = ({ contractAddress }) => {
                 <label>Last Name:</label>
                 <input type="text" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
               </div>
-              <button type="submit" className="btn btn-primary margin-top">Pay 1 ETH and Register</button>
+              <button type="submit" className="btn btn-primary margin-top">Pay and Register</button>
             </form>
           </div>
         </div>

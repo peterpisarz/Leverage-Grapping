@@ -31,7 +31,7 @@ const App = () => {
             </button>
           </nav>
           { !account ? (
-            <div className="home">Please connect your Wallet</div>
+            <div className="container-fluid">Please connect your Wallet to begin</div>
             ) : (
             <div className="home-page-container">
               <Routes>
