@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, } from "react-router-dom";
 
-const HomePage = () => {
+const HomePage = ({ accounts }) => {
   return (
     <div className="page-container">
       <div className="card home-card">

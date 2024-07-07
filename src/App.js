@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { ethers } from 'ethers';
 import HomePage from './components/HomePage';
 import CompetitorPage from './components/CompetitorPage';
@@ -8,16 +8,33 @@ import './App.css';
 
 const App = () => {
   const [account, setAccount] = useState(null);
+  const [provider, setProvider] = useState(null);
   const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE";
 
   const connectWallet = async () => {
     if (window.ethereum) {
+      const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       setAccount(accounts[0]);
     } else {
-      alert('Please install MetaMask');
+      alert('Open this App in a Web3 Browser like MetaMask or Coinbase Wallet');
     }
   };
+
+  useEffect(() => {
+    const initWallet = async () => {
+      if (window.ethereum && !account) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+          setProvider(provider);
+        }
+      }
+    };
+
+    initWallet();
+  }, [account]);
 
   return (
 
@@ -25,8 +42,8 @@ const App = () => {
 
         <div className="App">
           <nav className="navbar navbar-dark bg-dark">
-            <a className="navbar-brand" href="/">Leverage Grappling</a>
-            <button className="btn btn-outline-success" onClick={connectWallet}>
+            <Link className="navbar-brand" to="/">Leverage Grappling</Link>
+            <button className="btn btn-success" onClick={connectWallet}>
               {account ? account.substring(0, 6) + '...' + account.substring(account.length - 4) : 'Connect Wallet'}
             </button>
           </nav>
@@ -35,9 +52,9 @@ const App = () => {
             ) : (
             <div className="home-page-container">
               <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/competitor" element={<CompetitorPage />} />
-                <Route path="/promoter" element={<PromoterPage />} />
+                <Route path="/" element={<HomePage accounts={account} />} />
+                <Route path="/competitor" element={<CompetitorPage contract={contractAddress} accounts={account} />} />
+                <Route path="/promoter" element={<PromoterPage contract={contractAddress} accounts={account} />} />
               </Routes>
             </div>
           )}

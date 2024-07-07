@@ -3,12 +3,14 @@ import { ethers } from 'ethers';
 import LeverageABI from '../abis/Leverage.json';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-const CompetitorPage = ({ contractAddress }) => {
+const CompetitorPage = ({ contractAddress, accounts }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [competitors, setCompetitors] = useState([]);
 
-  const register = async () => {
+  const register = async (e) => {
+    e.preventDefault();
+
     if (!firstName || !lastName) return;
 
     const provider = new ethers.BrowserProvider(window.ethereum);
@@ -18,6 +20,7 @@ const CompetitorPage = ({ contractAddress }) => {
     try {
       const tx = await contract.register(firstName, lastName, { value: ethers.parseEther("0.1") });
       await tx.wait();
+      setCompetitors([...competitors, { firstName, lastName }]);
       alert('Registration successful');
     } catch (error) {
       console.error('Error registering:', error);
@@ -44,15 +47,8 @@ const CompetitorPage = ({ contractAddress }) => {
             </form>
           </div>
         </div>
-        <div className="col-md-8 d-flex align-items-center">
-          <div>
-            <h2>Competitors</h2>
-            <ul>
-              {competitors.map((competitor, index) => (
-                <li key={index}>{competitor.name} {competitor.lastName}</li>
-              ))}
-            </ul>
-          </div>
+        <div className="col-md-8">
+          <h2>Competitors</h2>
         </div>
       </div>
     </div>

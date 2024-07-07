@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import LeverageABI from '../abis/Leverage.json';
 
-const PromoterPage = ({ contractAddress }) => {
+const PromoterPage = ({ contractAddress, accounts }) => {
   const [entranceFee, setEntranceFee] = useState('');
   const [promotionShare, setPromotionShare] = useState('');
   const [matches, setMatches] = useState([]);
@@ -44,8 +44,7 @@ const PromoterPage = ({ contractAddress }) => {
           </div>
         
         </div>
-        <div className="col d-flex align-items-center">
-
+        <div className="col-md-8">
           <h2>Matches</h2>
           <ul>
             {matches.map((match, index) => (
