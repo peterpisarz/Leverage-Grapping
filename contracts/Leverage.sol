@@ -43,19 +43,20 @@ contract Leverage is Ownable{
         competitorId++;
         bracket[1].push(competitorId); // An array of competitor Ids
 
+        // Instantiate new competitor
         competitors[competitorId] = Competitor(competitorId, msg.sender, first, last, 0, 0);
 
         // Transfer promotion share
         uint256 promotionAmount = (entranceFee * promotionShare) / 100;
         payable(owner()).transfer(promotionAmount);
     }
-
+ 
     function getCompetitor(uint32 _competitorId) public view returns (Competitor memory) {
         require(_competitorId > 0 && _competitorId <= competitorId, "Competitor not registered.");
         return competitors[_competitorId];
     }
 
-    // accept uint8 _round arg for create match 
+    // Accept uint8 _round arg for create match 
     function createMatches(uint8 _round) public onlyOwner {
         require(bracket[_round].length % 2 == 0, "There must be an even number of competitors in the round.");
         require(bracket[_round].length > 0, "There are no competitors in the bracket");

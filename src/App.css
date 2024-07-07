@@ -1,38 +1,111 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+:root {
+  --clr-primary: #0D121D;
+  --clr-secondary: #121A29;
+  --clr-neutral: #767F92;
+
+  --clr-white: #F1F2F9;
+  --clr-blue: #2187D0;
+  --clr-red: #F45353;
+  --clr-green: #25CE8F;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+html, body {
+  font-family: "DM Sans";
+  color: var(--clr-white);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body {
+  background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  background-color: #7289da;
+  border: none;
+  font-size: 1.5rem;
+  padding: 20px;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: #677bc4;
+}
+
+.page-container {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.card {
+  background-color: #2c2f33;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  color: #dcdcdc;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.promoter-card {
+  background-color: #2c2f33;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  color: #dcdcdc;
+  width: 80%;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.home-card {
+  height: flex;
+  align-items: center;
+}
+
+.competitor-card{
+  width: 80%;
+}
+.container-fluid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+}
+
+.margin-top {
+  margin-top: 20px;
 }
