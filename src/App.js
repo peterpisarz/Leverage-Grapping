@@ -9,15 +9,21 @@ import './App.css';
 const App = () => {
   const [account, setAccount] = useState(null);
   const [provider, setProvider] = useState(null);
-  const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE";
+  const [contract, setContract] = useState(null);
 
   const connectWallet = async () => {
-    if (window.ethereum) {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setAccount(accounts[0]);
-    } else {
-      alert('Open this App in a Web3 Browser like MetaMask or Coinbase Wallet');
+    try {
+      if (window.ethereum) {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        setProvider(provider);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setAccount(accounts[0]);
+      } else {
+        alert('Open this App in a Web3 Browser like MetaMask or Coinbase Wallet');
+      }
+    } catch (error) {
+      console.error('Error connecting to wallet:', error);
+      alert('Error connecting to wallet. Check console for details.');
     }
   };
 
@@ -53,8 +59,8 @@ const App = () => {
             <div className="home-page-container">
               <Routes>
                 <Route path="/" element={<HomePage accounts={account} />} />
-                <Route path="/competitor" element={<CompetitorPage contract={contractAddress} accounts={account} />} />
-                <Route path="/promoter" element={<PromoterPage contract={contractAddress} accounts={account} />} />
+                <Route path="/competitor" element={<CompetitorPage contract={contract} accounts={account} />} />
+                <Route path="/promoter" element={<PromoterPage contract={contract} accounts={account} />} />
               </Routes>
             </div>
           )}
