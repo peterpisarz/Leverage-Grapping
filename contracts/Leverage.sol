@@ -29,14 +29,16 @@ contract Leverage is Ownable{
     Match[] public matches;
     mapping(uint32 => uint32[]) public bracket;
     mapping(uint32 => Competitor) public competitors;
-    address public promoter
+    address public promoter;
+    string public promotionName;
 
-    constructor(uint256 _entranceFee, uint8 _promotionShare) 
+    constructor(uint256 _entranceFee, uint8 _promotionShare, string memory _promotionName, address _promoter) 
         
-        Ownable(msg.sender) {
+        Ownable(_promoter) {
         entranceFee = _entranceFee;
         promotionShare = _promotionShare;
-        promoter = msg.sender
+        promoter = _promoter;
+        promotionName = _promotionName;
     }
 
     function register(string memory first, string memory last) public payable {

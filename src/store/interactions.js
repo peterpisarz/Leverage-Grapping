@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import TOKEN_ABI from '../abis/Token.json';
+import LEVERAGE_ABI from '../abis/Leverage.json';
 
 export const loadProvider = (dispatch) => {
   const connection = new ethers.providers.Web3Provider(window.ethereum)
@@ -24,12 +24,19 @@ export const loadAccount = async (dispatch) => {
   return account
 }
 
-export const loadToken = async (provider, address, dispatch) => {
-  let token, symbol
+export const loadTournament = async (provider, address, dispatch) => {
+  let tournament, promoter
 
-  token = new ethers.Contract(address, TOKEN_ABI, provider)
-  symbol = await token.symbol()
-  dispatch({ type: 'TOKEN_LOADED', token, symbol })
+  tournament = new ethers.Contract(address, LEVERAGE_ABI, provider)
+  promoter = await tournament.promoter()
+  dispatch({ type: 'TOURNAMENT_LOADED', tournament, promoter })
 
   return token
 }
+
+export const addContract = (address) => {
+  return {
+    type: 'CONTRACT_ADDED',
+    address
+  };
+};

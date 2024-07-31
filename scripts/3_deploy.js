@@ -1,4 +1,4 @@
-// Manually deploy Leverage contract
+// Deploy Leverage contract only
 
 const hre = require("hardhat")
 
@@ -8,16 +8,17 @@ async function main() {
 
   const entranceFee = ethers.parseEther("1")
   const promotionShare = 3
+  const name = "Leverage"
+  const [promoter] = await hre.ethers.getSigners()
 
   // Deploy the contract
   console.log("Deploying LeverageFactory...");
-  const myContract = await leverage.deploy(entranceFee, promotionShare, { gasLimit: 12000000} );
+  const myContract = await leverage.deploy(entranceFee, promotionShare, name, promoter, { gasLimit: 12000000} );
   const tx = await myContract.waitForDeployment();
   console.log(`Leverage deployed to: ${await myContract.getAddress()} on ${hre.network.name}\n`);
 
   // Verify on Etherscan
-  const network = await hre.ethers.provider.getNetwork();
-  const chainId = network.chainId;
+  const { chainId } = await hre.ethers.provider.getNetwork();
 
   if (chainId != 31337) {
     // Verify the contract on Etherscan
@@ -35,6 +36,7 @@ async function main() {
   } else {
     console.log(`Skipping verification on localhost`)
   }
+  console.log(`\nDeployment Script Complete!`)
 
 }
 
